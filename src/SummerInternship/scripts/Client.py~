@@ -1,0 +1,59 @@
+#!/usr/bin/env python
+from __future__ import print_function
+import sys
+import rospy
+import json
+from SummerInternship.srv import *
+from std_msgs.msg import String
+import random
+
+
+
+def findForce(params):
+    rospy.wait_for_service('calculate_force')
+    print('Service found')
+    try:
+        
+        findForce = rospy.ServiceProxy('calculate_force', Simulate)
+        response = findForce(params)
+        return response.force
+    
+    except rospy.ServiceException, e:
+        print("Service call failed: {}".format(e))
+
+        
+def client():
+    # initilazing a ros node called SummerInternshipClient
+    rospy.init_node('SummerInternshipClient', anonymous=True)
+
+    # Creating a publisher to publish on topic '/sim_observation'
+    pub = rospy.Publisher('/sim_observation', String, queue_size=10)
+
+    # message skeleton for publishing
+    message_skeleton = "t={} Simulated({},{}) = {}" 
+
+    rate = rospy.Rate(0.2) # 0.2hz or once in 5 seconds
+    
+    params = {'mass':0.0,'acceleration':0.0}
+
+    count = 0
+    while not rospy.is_shutdown() and count < 5:
+        print('In while loop with count : {}'.format(count))
+        params['mass'] = random.uniform(0.0,100.0)
+        params['acceleration'] = random.uniform(0.0,100.0)
+
+        service_arg = json.dumps(params)
+        print('Sending Arguments : {}'.format(service_arg))
+        force = findForce(service_arg)
+        pub.publish(message_skeleton.format(rospy.Time.now(),params['mass'],\
+                                            params['acceleration'],force))
+        count += 1
+        rate.sleep()
+
+    print('Ended')
+
+if __name__ == '__main__':
+    try:
+        client()
+    except rospy.ROSInterruptException:
+        pass

@@ -1,0 +1,8 @@
+prefix=/home/abhishek/catkin_workspace/install
+
+Name: SummerInternship
+Description: Description of SummerInternship
+Version: 0.0.0
+Cflags: -I/home/abhishek/catkin_workspace/install/include
+Libs: -L/home/abhishek/catkin_workspace/install/lib 
+Requires: message_generation roscpp rospy std_msgs message_runtime
