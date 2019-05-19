@@ -29,8 +29,11 @@ bool calculateForce(SummerInternship::Simulate::Request &req,\
   const float_t mass = (const float_t)parameters["mass"].asFloat();
   const float_t acce = (const float_t)parameters["acceleration"].asFloat();
   ROS_INFO("Parameters received : Mass : %f | acceleration : %f",mass,acce);
+
+  // calculating Force using Newton's Second law : F = m*a
   res.force = (float_t)(mass * acce);
   ROS_INFO("Force Calculated : %f",res.force);
+  
   return true;
   
 }
@@ -49,9 +52,7 @@ int main(int argc, char** argv)
 
   ros::spin();
 
-  return 0;
-  
-    
+  return 0;  
 }
 
 
